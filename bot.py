@@ -2,23 +2,20 @@ import logging
 import csv
 import sqlite3
 import random
+import os
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-API_TOKEN = TELEGRAM_API_TOKEN
+API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
 
-# Настройка логирования
 logging.basicConfig(level=logging.INFO)
-
-# Инициализация бота и диспетчера
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
-# Настройка базы данных SQLite для хранения прогресса
 conn = sqlite3.connect('progress.db', check_same_thread=False)
 cursor = conn.cursor()
 cursor.execute(
@@ -31,7 +28,6 @@ cursor.execute(
 )
 conn.commit()
 
-# Загрузка вопросов-ответов из CSV
 questions = []  # список словарей: {id, question, answer}
 with open('qa.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
